@@ -1,4 +1,4 @@
-//Implementation of Binary Search Tree that inserts at the root
+//Implementation of Binary Search Tree that inserts randomly
 //templated with k type of key, v type of value,
 //a comparision function that returns true if first key is less than second key,
 //and an equals function that returns true if first key equals second key
