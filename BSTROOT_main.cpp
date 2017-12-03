@@ -1,10 +1,7 @@
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
-#include "BSTLEAF.h"
-//#include "BSTROOT.h"
-//#include "BSTRAND.h"
-//#include "AVL.h"
+#include "BSTROOT.h"
 
 #include <iostream>
 
@@ -30,7 +27,7 @@ bool equals_function(const int a, const int b) {
 
 SCENARIO("Testing Insertion and Lookup") {
 	GIVEN ("List of items, with keys being [1,19,5,18,3,8,9] and values being [A,S,E,R,C,H,I]") {
-		BST_Leaf<int, char, comparison_function, equals_function> * bst = new BST_Leaf<int, char, comparison_function, equals_function>;
+		BST_Root<int, char, comparison_function, equals_function> * bst = new BST_Root<int, char, comparison_function, equals_function>;
 		
 		bst->insert(1,'A');
 		bst->insert(19,'S');
@@ -95,7 +92,7 @@ SCENARIO("Testing Insertion and Lookup") {
 
 SCENARIO("Testing removal") {
 	GIVEN ("List of items, with keys being [1,19,5,18,3,8,9] and values being [A,S,E,R,C,H,I]") {
-		BST_Leaf<int, char, comparison_function, equals_function> * bst = new BST_Leaf<int, char, comparison_function, equals_function>;
+		BST_Root<int, char, comparison_function, equals_function> * bst = new BST_Root<int, char, comparison_function, equals_function>;
 		
 		bst->insert(1,'A');
 		bst->insert(19,'S');
@@ -167,7 +164,7 @@ SCENARIO("Testing removal") {
 
 SCENARIO("Testing bonus methods") {
 	GIVEN ("List of items, with keys being [1,19,5,18,3,8,9] and values being [A,S,E,R,C,H,I]") {
-		BST_Leaf<int, char, comparison_function, equals_function> * bst = new BST_Leaf<int, char, comparison_function, equals_function>;
+		BST_Root<int, char, comparison_function, equals_function> * bst = new BST_Root<int, char, comparison_function, equals_function>;
 		
 		bst->insert(1,'A');
 		bst->insert(19,'S');
@@ -222,15 +219,15 @@ SCENARIO("Testing bonus methods") {
 		
 		WHEN("Checking height") {
 			size_t height = bst->height();
-			THEN("Height should be 6 (i think)") {
-				REQUIRE(height == 6);
+			THEN("Height should be 4 (i think)") {
+				REQUIRE(height == 4);
 			}
 		}
 		
 		WHEN("Checking balance") {
 			int balance = bst->balance();
-			THEN("Balance should -5 (i think)") {
-				REQUIRE(balance == -5);
+			THEN("Balance should 1 (i think)") {
+				REQUIRE(balance == 1);
 			}
 		}
 		
@@ -240,7 +237,7 @@ SCENARIO("Testing bonus methods") {
 /*
 SCENARIO("Testing 'big five' methods") {
 	GIVEN("List of items, with keys being [1,19,5,18,3,8,9] and values being [A,S,E,R,C,H,I]") {
-		BST_Leaf<int, char, comparison_function, equals_function> * bst = new BST_Leaf<int, char, comparison_function, equals_function>;
+		BST_Root<int, char, comparison_function, equals_function> * bst = new BST_Root<int, char, comparison_function, equals_function>;
 		
 		bst->insert(1,'A');
 		bst->insert(19,'S');
@@ -251,7 +248,7 @@ SCENARIO("Testing 'big five' methods") {
 		bst->insert(9,'I');
 		
 		WHEN("Testing copy constructor") {
-			BST_Leaf<int, char, comparison_function, equals_function> * bst2 = bst;
+			BST_Root<int, char, comparison_function, equals_function> * bst2 = bst;
 			THEN("New copy should successfully lookup 18") {
 				char value = bst2->lookup(18);
 				REQUIRE(value == 'R');
@@ -259,7 +256,7 @@ SCENARIO("Testing 'big five' methods") {
 		}
 		
 		WHEN("Testing copy assignment") {
-			BST_Leaf<int, char, comparison_function, equals_function> * bst2 = new BST_Leaf<int, char, comparison_function, equals_function>;
+			BST_Root<int, char, comparison_function, equals_function> * bst2 = new BST_Root<int, char, comparison_function, equals_function>;
 			//throw in values different from other to ensure assignment works
 			bst2->insert(4,'D');
 			bst2->insert(2,'B');

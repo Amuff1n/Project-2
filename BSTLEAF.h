@@ -5,6 +5,9 @@
 
 //this BST is NOT self-balancing
 
+//comeback to removing and clearing functions because they crash pocketcpp
+//but check out fine in ubuntu with valgrind :thinking:
+
 #ifndef	_BSTLEAF_H_
 #define _BSTLEAF_H_
 #include <stdexcept>
@@ -36,7 +39,6 @@ namespace cop3530 {
 		v& lookup(k key);
 		v& do_lookup(Node<k,v> *& root, k key);
 		
-		
 		bool contains(k key);
 		bool is_empty();
 		bool is_full();
@@ -48,7 +50,6 @@ namespace cop3530 {
 		//since balance can be negative, and size_t is unsigned, return int instead
 		int balance();
 		int do_balance(Node<k,v> *& root);
-		
 		
 		private:
 		Node<k,v> * head = nullptr;
