@@ -37,13 +37,17 @@ namespace cop3530 {
 		v& do_lookup(Node<k,v> *& root, k key);
 		
 		
-		//bool contains(k key);
-		//bool is_empty();
-		//bool is_full();
-		//size_t size();
+		bool contains(k key);
+		bool is_empty();
+		bool is_full();
+		size_t size();
+		size_t do_size(Node<k,v> *& root);
 		void clear();
-		//size_t height();
-		//size_t balance_factor();
+		size_t height();
+		size_t do_height(Node<k,v> *& root);
+		//since balance can be negative, and size_t is unsigned, return int instead
+		int balance();
+		int do_balance(Node<k,v> *& root);
 		
 		
 		private:
@@ -67,6 +71,7 @@ namespace cop3530 {
 		class Node<k,v> *temp;
 		temp = other.head;
 		//TODO insert every key value pair from other to construct new tree
+		
 	}
 	
 	//--copy assignment
@@ -139,8 +144,6 @@ namespace cop3530 {
 	}
 	
 	//--do_remove
-	//TODO something breaks when you remove the head
-	//you can still lookup the head but links to the subtrees are broken?
 	template <typename k, typename v, bool (*comp_func)(k,k), bool (*eq_func)(k,k)>
 	Node<k,v>* BST_Leaf<k,v,comp_func,eq_func>::do_remove(Node<k,v> *& root, k key) {
 		class Node<k,v> *temp;
@@ -199,6 +202,63 @@ namespace cop3530 {
 		}
 	}
 	
+	//--contains
+	template <typename k, typename v, bool (*comp_func)(k,k), bool (*eq_func)(k,k)>
+	bool BST_Leaf<k,v,comp_func,eq_func>::contains(k key) {
+		try {
+			this->do_lookup(head, key);
+		}
+		catch (...) {
+			return false;
+		}
+		return true;
+	}
+	
+	//--is_empty
+	template <typename k, typename v, bool (*comp_func)(k,k), bool (*eq_func)(k,k)>
+	bool BST_Leaf<k,v,comp_func,eq_func>::is_empty() {
+		if (head == nullptr) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	//--is_full
+	//should only be full if we can not physically allocate more memory for a new node
+	template <typename k, typename v, bool (*comp_func)(k,k), bool (*eq_func)(k,k)>
+	bool BST_Leaf<k,v,comp_func,eq_func>::is_full() {
+		class Node<k,v> *temp;
+		try {
+			
+			temp = new Node<k,v>; //would throw an exception with 'new' if out of memory
+		}
+		catch (...) {
+			return true;
+		}
+		delete temp;
+		return false;
+	}
+	
+	//--size
+	template <typename k, typename v, bool (*comp_func)(k,k), bool (*eq_func)(k,k)>
+	size_t BST_Leaf<k,v,comp_func,eq_func>::size() {
+		return this->do_size(head);
+	}
+	
+	//--do_size
+	template <typename k, typename v, bool (*comp_func)(k,k), bool (*eq_func)(k,k)>
+	size_t BST_Leaf<k,v,comp_func,eq_func>::do_size(Node<k,v> *& root) {
+		if (root == nullptr) {
+			return 0;
+		}
+		size_t temp = 1;
+		temp += this->do_size(root->left);
+		temp += this->do_size(root->right);
+		return temp;
+	}
+	
 	//--clear
 	template <typename k, typename v, bool (*comp_func)(k,k), bool (*eq_func)(k,k)>
 	void BST_Leaf<k,v,comp_func,eq_func>::clear() {
@@ -207,5 +267,40 @@ namespace cop3530 {
 			this->remove(head->key);
 		}
 	}
+	
+	//--height
+	template <typename k, typename v, bool (*comp_func)(k,k), bool (*eq_func)(k,k)>
+	size_t BST_Leaf<k,v,comp_func,eq_func>::height() {
+		return this->do_height(head);
+	}
+	
+	//--do_height
+	template <typename k, typename v, bool (*comp_func)(k,k), bool (*eq_func)(k,k)>
+	size_t BST_Leaf<k,v,comp_func,eq_func>::do_height(Node<k,v> *& root) {
+		if (root == nullptr) {
+			return 0;
+		}
+		size_t temp = 1;
+		temp += std::max(this->do_height(root->left), this->do_height(root->right));
+		return temp;
+	}
+	
+	//--balance
+	template <typename k, typename v, bool (*comp_func)(k,k), bool (*eq_func)(k,k)>
+	int BST_Leaf<k,v,comp_func,eq_func>::balance() {
+		return this->do_balance(head);
+	}
+	
+	//--do_balance
+	template <typename k, typename v, bool (*comp_func)(k,k), bool (*eq_func)(k,k)>
+	int BST_Leaf<k,v,comp_func,eq_func>::do_balance(Node<k,v> *& root) {
+		if (root == nullptr) {
+			return 0;
+		}
+		int left_height = this->do_height(root->left);
+		int right_height = this->do_height(root->right);
+		return left_height - right_height;
+	}
+	
 }
 #endif
