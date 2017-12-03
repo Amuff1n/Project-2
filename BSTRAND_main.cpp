@@ -217,6 +217,7 @@ SCENARIO("Testing bonus methods") {
 			}
 		}
 		
+		//failing this test. What would the height be for a RAND BST?
 		WHEN("Checking height") {
 			size_t height = bst->height();
 			THEN("Height should be likely not be 6 or 4") {
@@ -236,7 +237,7 @@ SCENARIO("Testing bonus methods") {
 		delete bst;
 	}
 }
-/*
+
 SCENARIO("Testing 'big five' methods") {
 	GIVEN("List of items, with keys being [1,19,5,18,3,8,9] and values being [A,S,E,R,C,H,I]") {
 		BST_Rand<int, char, comparison_function, equals_function> * bst = new BST_Rand<int, char, comparison_function, equals_function>;
@@ -257,6 +258,7 @@ SCENARIO("Testing 'big five' methods") {
 			}
 		}
 		
+		//losing bytes in this test
 		WHEN("Testing copy assignment") {
 			BST_Rand<int, char, comparison_function, equals_function> * bst2 = new BST_Rand<int, char, comparison_function, equals_function>;
 			//throw in values different from other to ensure assignment works
@@ -277,4 +279,4 @@ SCENARIO("Testing 'big five' methods") {
 		delete bst;
 	}
 }
-*/
+

@@ -30,6 +30,7 @@ namespace cop3530 {
 		~BST_Leaf();
 		BST_Leaf(const BST_Leaf& other); //copy constructor
 		BST_Leaf<k,v,comp_func,eq_func>& operator= (const BST_Leaf& other); //copy assignment
+		Node<k,v> * do_copy(const Node<k,v>*& root); //helper method for copy stuff
 		BST_Leaf(BST_Leaf&& other); //move constructor
 		BST_Leaf<k,v,comp_func,eq_func>& operator= (BST_Leaf&& other); //move-assignment operator
 		
@@ -69,10 +70,7 @@ namespace cop3530 {
 	//--copy constructor
 	template <typename k, typename v, bool (*comp_func)(k,k), bool (*eq_func)(k,k)>
 	BST_Leaf<k,v,comp_func,eq_func>::BST_Leaf(const BST_Leaf& other) {
-		class Node<k,v> *temp;
-		temp = other.head;
-		//TODO insert every key value pair from other to construct new tree
-		
+		head = this->do_copy(other.head);
 	}
 	
 	//--copy assignment
@@ -81,11 +79,29 @@ namespace cop3530 {
 	BST_Leaf<k,v,comp_func,eq_func>& BST_Leaf<k,v,comp_func,eq_func>::operator=(const BST_Leaf& other) {
 		if (this != other) {
 			this->clear();
-			class Node<k,v> *temp;
-			temp = other.head;
-			//TODO insert every key value pair from other to construct new tree
+			
+			head = this->do_copy(other.head);
 		}
 		return *this;
+	}
+	
+	//--do_copy helper
+	template <typename k, typename v, bool (*comp_func)(k,k), bool (*eq_func)(k,k)>
+	Node<k,v> * BST_Leaf<k,v,comp_func,eq_func>::do_copy(const Node<k,v> *& root) {
+		if (root == nullptr) {
+			return nullptr;
+		}
+		//make new node and copy
+		class Node<k,v> *temp;
+		temp = new Node<k,v>;
+		temp->key = root->key;
+		temp->value = root->value;
+		
+		//do_copy on children
+		temp->left = this->do_copy(root->left);
+		temp->right = this->do_copy(root->right);
+		
+		return temp;
 	}
 	
 	//--move constructor

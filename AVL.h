@@ -69,8 +69,6 @@ namespace cop3530 {
 	//--copy constructor
 	template <typename k, typename v, bool (*comp_func)(k,k), bool (*eq_func)(k,k)>
 	AVL<k,v,comp_func,eq_func>::AVL(const AVL& other) {
-		//TODO insert every key value pair from other to construct new tree
-		//perhaps use a helper method that can be recursively called
 		head = this->do_copy(other.head);
 	}
 	
@@ -80,15 +78,13 @@ namespace cop3530 {
 	AVL<k,v,comp_func,eq_func>& AVL<k,v,comp_func,eq_func>::operator=(const AVL& other) {
 		if (this != other) {
 			this->clear();
-			
-			//TODO insert every key value pair from other to construct new tree
-			//perhaps use a helper method that can be recursively called
+	
 			head = this->do_copy(other.head);
 		}
 		return *this;
 	}
 	
-	//--copy helper
+	//--dp_copy helper
 	template <typename k, typename v, bool (*comp_func)(k,k), bool (*eq_func)(k,k)>
 	Node<k,v> * AVL<k,v,comp_func,eq_func>::do_copy(const Node<k,v> *& root) {
 		if (root == nullptr) {
@@ -220,9 +216,63 @@ namespace cop3530 {
 		}
 		if (comp_func(key,root->key)) {
 			root->left = do_remove(root->left, key);
+			int balance_root = this->do_balance(root);
+			int balance_left = this->do_balance(root->left);
+			if (balance_root >= 2 && balance_left <= 1) {
+				//rotate root right
+				class Node<k,v> *temp;
+				temp = root->left;
+				root->left = temp->right;
+				temp->right = root;
+				root = temp;
+			}
+			else if (balance_root >= 2 && balance_left >= -1) {
+				class Node<k,v> *temp;
+				//rotate root left
+				temp = root->right;
+				root->right = temp->left;
+				temp->left = root;
+				root = temp;
+					
+				//then rotate root right
+				temp = root->left;
+				root->left = temp->right;
+				temp->right = root;
+				root = temp;
+			}
+			else {
+				//do nothing?
+			}
 		}
 		if (comp_func(root->key, key)) {
 			root->right = do_remove(root->right, key);
+			int balance_root = this->do_balance(root);
+			int balance_right = this->do_balance(root->right);
+			if (balance_root <= -2 && balance_right >= -1) {
+				//rotate root left
+				class Node<k,v> *temp;
+				temp = root->right;
+				root->right = temp->left;
+				temp->left = root;
+				root = temp;
+			}
+			else if (balance_root <= -2 && balance_right <= 1) {	
+				class Node<k,v> *temp;			
+				//rotate root right
+				temp = root->left;
+				root->left = temp->right;
+				temp->right = root;
+				root = temp;
+				
+				//then rotate root left
+				temp = root->right;
+				root->right = temp->left;
+				temp->left = root;
+				root = temp;
+			}
+			else {
+				//don't rotate?
+			}
 		}
 		if (eq_func(key, root->key)) {
 			temp = root;
@@ -241,9 +291,6 @@ namespace cop3530 {
 				root->value = min->value;
 				//do_remove on right subtree with current root's key, since there is now a duplicate
 				do_remove(root->right, root->key);
-				
-				//think i need to do rotation here
-				
 			}
 			delete temp;
 		}

@@ -234,7 +234,7 @@ SCENARIO("Testing bonus methods") {
 		delete bst;
 	}
 }
-/*
+
 SCENARIO("Testing 'big five' methods") {
 	GIVEN("List of items, with keys being [1,19,5,18,3,8,9] and values being [A,S,E,R,C,H,I]") {
 		BST_Root<int, char, comparison_function, equals_function> * bst = new BST_Root<int, char, comparison_function, equals_function>;
@@ -255,6 +255,7 @@ SCENARIO("Testing 'big five' methods") {
 			}
 		}
 		
+		//losing bytes in this test
 		WHEN("Testing copy assignment") {
 			BST_Root<int, char, comparison_function, equals_function> * bst2 = new BST_Root<int, char, comparison_function, equals_function>;
 			//throw in values different from other to ensure assignment works
@@ -275,4 +276,3 @@ SCENARIO("Testing 'big five' methods") {
 		delete bst;
 	}
 }
-*/

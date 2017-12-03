@@ -90,7 +90,7 @@ SCENARIO("Testing Insertion and Lookup") {
 		delete avl;
 	}
 }
-/*
+
 SCENARIO("Testing removal") {
 	GIVEN ("List of items, with keys being [1,19,5,18,3,8,9] and values being [A,S,E,R,C,H,I]") {
 		AVL<int, char, comparison_function, equals_function> * avl = new AVL<int, char, comparison_function, equals_function>;
@@ -144,7 +144,7 @@ SCENARIO("Testing removal") {
 		delete avl;
 	}
 }
-*/
+
 SCENARIO("Testing bonus methods") {
 	GIVEN ("List of items, with keys being [1,19,5,18,3,8,9] and values being [A,S,E,R,C,H,I]") {
 		AVL<int, char, comparison_function, equals_function> * avl = new AVL<int, char, comparison_function, equals_function>;
@@ -215,6 +215,24 @@ SCENARIO("Testing bonus methods") {
 			}
 		}
 		
+		WHEN("Removing 3") {
+			avl->remove(3);
+			int balance = avl->balance();
+			THEN("Balance should have absolute value <= 1 ") {
+				REQUIRE(abs(balance) <= 1);
+			}
+		}
+		
+		WHEN("Removing 3, 5, and 9") {
+			avl->remove(3);
+			avl->remove(5);
+			avl->remove(9);
+			int balance = avl->balance();
+			THEN("Balance should have absolute value <= 1") {
+				REQUIRE(abs(balance) <= 1);
+			}
+		}
+		
 		delete avl;
 	}
 }
@@ -237,8 +255,10 @@ SCENARIO("Testing 'big five' methods") {
 				char value = avl2->lookup(18);
 				REQUIRE(value == 'R');
 			}
+			
 		}
 		
+		//losing bytes in this test
 		WHEN("Testing copy assignment") {
 			AVL<int, char, comparison_function, equals_function> * avl2 = new AVL<int, char, comparison_function, equals_function>;
 			//throw in values different from other to ensure assignment works
