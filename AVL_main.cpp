@@ -218,7 +218,7 @@ SCENARIO("Testing bonus methods") {
 		delete avl;
 	}
 }
-/*
+
 SCENARIO("Testing 'big five' methods") {
 	GIVEN("List of items, with keys being [1,19,5,18,3,8,9] and values being [A,S,E,R,C,H,I]") {
 		AVL<int, char, comparison_function, equals_function> * avl = new AVL<int, char, comparison_function, equals_function>;
@@ -259,4 +259,4 @@ SCENARIO("Testing 'big five' methods") {
 		delete avl;
 	}
 }
-*/
+
