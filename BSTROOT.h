@@ -11,6 +11,8 @@
 
 namespace cop3530 {
 	
+	#ifndef NODE_H_
+	#define NODE_H_
 	template <typename k, typename v>
 	class Node {
 		public:
@@ -19,17 +21,18 @@ namespace cop3530 {
 		Node<k,v> * left = nullptr;
 		Node<k,v> * right = nullptr;
 	};
+	#endif 
 	
-	template <typename k, typename v, bool (*comp_func)(k,k), bool (*eq_func)(k,k)>
-	class BST_Root {
+	template <typename k, typename v, bool (*comp_func)(const k&,const k&), bool (*eq_func)(const k&,const k&)>
+	class BSTROOT {
 		public:
-		BST_Root();
-		~BST_Root();
-		BST_Root(const BST_Root& other); //copy constructor
-		BST_Root<k,v,comp_func,eq_func>& operator= (const BST_Root& other); //copy assignment
+		BSTROOT();
+		~BSTROOT();
+		BSTROOT(const BSTROOT& other); //copy constructor
+		BSTROOT<k,v,comp_func,eq_func>& operator= (const BSTROOT& other); //copy assignment
 		Node<k,v> * do_copy(const Node<k,v>*& root); //helper method for copy stuff
-		BST_Root(BST_Root&& other); //move constructor
-		BST_Root<k,v,comp_func,eq_func>& operator= (BST_Root&& other); //move-assignment operator
+		BSTROOT(BSTROOT&& other); //move constructor
+		BSTROOT<k,v,comp_func,eq_func>& operator= (BSTROOT&& other); //move-assignment operator
 		
 		void insert(k key, v value);
 		Node<k,v> * do_insert(Node<k,v> *& root, k key, v value);
@@ -55,26 +58,26 @@ namespace cop3530 {
 	};
 	
 	//--constructors and destructors
-	template <typename k, typename v, bool (*comp_func)(k,k), bool (*eq_func)(k,k)>
-	BST_Root<k,v,comp_func,eq_func>::BST_Root() {
+	template <typename k, typename v, bool (*comp_func)(const k&,const k&), bool (*eq_func)(const k&,const k&)>
+	BSTROOT<k,v,comp_func,eq_func>::BSTROOT() {
 		head = nullptr;
 	}
 	
-	template <typename k, typename v, bool (*comp_func)(k,k), bool (*eq_func)(k,k)>
-	BST_Root<k,v,comp_func,eq_func>::~BST_Root() {
+	template <typename k, typename v, bool (*comp_func)(const k&,const k&), bool (*eq_func)(const k&,const k&)>
+	BSTROOT<k,v,comp_func,eq_func>::~BSTROOT() {
 		this->clear();
 	}
 	
 	//--copy constructor
-	template <typename k, typename v, bool (*comp_func)(k,k), bool (*eq_func)(k,k)>
-	BST_Root<k,v,comp_func,eq_func>::BST_Root(const BST_Root& other) {
+	template <typename k, typename v, bool (*comp_func)(const k&,const k&), bool (*eq_func)(const k&,const k&)>
+	BSTROOT<k,v,comp_func,eq_func>::BSTROOT(const BSTROOT& other) {
 		head = this->do_copy(other.head);
 	}
 	
 	//--copy assignment
 	//may have exception problems if other throws exceptions
-	template <typename k, typename v, bool (*comp_func)(k,k), bool (*eq_func)(k,k)>
-	BST_Root<k,v,comp_func,eq_func>& BST_Root<k,v,comp_func,eq_func>::operator=(const BST_Root& other) {
+	template <typename k, typename v, bool (*comp_func)(const k&,const k&), bool (*eq_func)(const k&,const k&)>
+	BSTROOT<k,v,comp_func,eq_func>& BSTROOT<k,v,comp_func,eq_func>::operator=(const BSTROOT& other) {
 		if (this != other) {
 			this->clear();
 			head = this->do_copy(other.head);
@@ -83,8 +86,8 @@ namespace cop3530 {
 	}
 	
 	//--dp_copy helper
-	template <typename k, typename v, bool (*comp_func)(k,k), bool (*eq_func)(k,k)>
-	Node<k,v> * BST_Root<k,v,comp_func,eq_func>::do_copy(const Node<k,v> *& root) {
+	template <typename k, typename v, bool (*comp_func)(const k&,const k&), bool (*eq_func)(const k&,const k&)>
+	Node<k,v> * BSTROOT<k,v,comp_func,eq_func>::do_copy(const Node<k,v> *& root) {
 		if (root == nullptr) {
 			return nullptr;
 		}
@@ -102,15 +105,15 @@ namespace cop3530 {
 	}
 	
 	//--move constructor
-	template <typename k, typename v, bool (*comp_func)(k,k), bool (*eq_func)(k,k)>
-	BST_Root<k,v,comp_func,eq_func>::BST_Root(BST_Root&& other) {
+	template <typename k, typename v, bool (*comp_func)(const k&,const k&), bool (*eq_func)(const k&,const k&)>
+	BSTROOT<k,v,comp_func,eq_func>::BSTROOT(BSTROOT&& other) {
 		head = other->head;
 		other->head = nullptr;
 	}
 	
 	//--move assignment
-	template <typename k, typename v, bool (*comp_func)(k,k), bool (*eq_func)(k,k)>
-	BST_Root<k,v,comp_func,eq_func>& BST_Root<k,v,comp_func,eq_func>::operator=(BST_Root&& other) {
+	template <typename k, typename v, bool (*comp_func)(const k&,const k&), bool (*eq_func)(const k&,const k&)>
+	BSTROOT<k,v,comp_func,eq_func>& BSTROOT<k,v,comp_func,eq_func>::operator=(BSTROOT&& other) {
 		if (this != other) {
 			this->clear();
 			head = other->head;
@@ -120,14 +123,14 @@ namespace cop3530 {
 	}
 	
 	//--insert
-	template <typename k, typename v, bool (*comp_func)(k,k), bool (*eq_func)(k,k)>
-	void BST_Root<k,v,comp_func,eq_func>::insert(k key, v value) {
+	template <typename k, typename v, bool (*comp_func)(const k&,const k&), bool (*eq_func)(const k&,const k&)>
+	void BSTROOT<k,v,comp_func,eq_func>::insert(k key, v value) {
 		head = this->do_insert(head, key, value);
 	}
 	
 	//--do_insert
-	template <typename k, typename v, bool (*comp_func)(k,k), bool (*eq_func)(k,k)>
-	Node<k,v> * BST_Root<k,v,comp_func,eq_func>::do_insert(Node<k,v> *& root, k key, v value) {
+	template <typename k, typename v, bool (*comp_func)(const k&,const k&), bool (*eq_func)(const k&,const k&)>
+	Node<k,v> * BSTROOT<k,v,comp_func,eq_func>::do_insert(Node<k,v> *& root, k key, v value) {
 		if (root == nullptr) {
 			root = new Node<k,v>;
 			root->key = key;
@@ -144,7 +147,7 @@ namespace cop3530 {
 			temp->right = root;
 			root = temp;
 		}
-		else {
+		else if (comp_func(root->key,key)){
 			root->right = this->do_insert(root->right, key, value);
 			//rotate root left
 			class Node<k,v> *temp;
@@ -153,18 +156,21 @@ namespace cop3530 {
 			temp->left = root;
 			root = temp;
 		}
+		else {
+			root->value = value;
+		}
 		return root;
 	}
 	
 	//--remove
-	template <typename k, typename v, bool (*comp_func)(k,k), bool (*eq_func)(k,k)>
-	void BST_Root<k,v,comp_func,eq_func>::remove(k key) {
+	template <typename k, typename v, bool (*comp_func)(const k&,const k&), bool (*eq_func)(const k&,const k&)>
+	void BSTROOT<k,v,comp_func,eq_func>::remove(k key) {
 		head = this->do_remove(head, key);
 	}
 	
 	//--do_remove
-	template <typename k, typename v, bool (*comp_func)(k,k), bool (*eq_func)(k,k)>
-	Node<k,v>* BST_Root<k,v,comp_func,eq_func>::do_remove(Node<k,v> *& root, k key) {
+	template <typename k, typename v, bool (*comp_func)(const k&,const k&), bool (*eq_func)(const k&,const k&)>
+	Node<k,v>* BSTROOT<k,v,comp_func,eq_func>::do_remove(Node<k,v> *& root, k key) {
 		class Node<k,v> *temp;
 		if (root == nullptr) {
 			return nullptr;
@@ -179,6 +185,7 @@ namespace cop3530 {
 			temp = root;
 			if (root->right == nullptr) {
 				root = root->left;
+				delete temp;
 			}
 			else {
 				//find minimum value in right subtree
@@ -193,22 +200,23 @@ namespace cop3530 {
 				//do_remove on right subtree with current root's key, since there is now a duplicate
 				do_remove(root->right, root->key);
 			}
-			delete temp;
+			
 		}
 		return root;	
 	}
 	
 	//--lookup 
-	template <typename k, typename v, bool (*comp_func)(k,k), bool (*eq_func)(k,k)>
-	v& BST_Root<k,v,comp_func,eq_func>::lookup(k key) {
+	template <typename k, typename v, bool (*comp_func)(const k&,const k&), bool (*eq_func)(const k&,const k&)>
+	v& BSTROOT<k,v,comp_func,eq_func>::lookup(k key) {
 		return this->do_lookup(head, key);
 	}
 	
 	//--do_lookup 
-	template <typename k, typename v, bool (*comp_func)(k,k), bool (*eq_func)(k,k)>
-	v& BST_Root<k,v,comp_func,eq_func>::do_lookup(Node<k,v> *& root, k key) {
+	template <typename k, typename v, bool (*comp_func)(const k&,const k&), bool (*eq_func)(const k&,const k&)>
+	v& BSTROOT<k,v,comp_func,eq_func>::do_lookup(Node<k,v> *& root, k key) {
 		if (root == nullptr) {
-			throw std::invalid_argument("key does not exist in BST");
+			throw std::runtime_error("key does not exist in BST");
+
 		}
 		if (eq_func(key, root->key)) {
 			return root->value;
@@ -222,8 +230,8 @@ namespace cop3530 {
 	}
 	
 	//--contains
-	template <typename k, typename v, bool (*comp_func)(k,k), bool (*eq_func)(k,k)>
-	bool BST_Root<k,v,comp_func,eq_func>::contains(k key) {
+	template <typename k, typename v, bool (*comp_func)(const k&,const k&), bool (*eq_func)(const k&,const k&)>
+	bool BSTROOT<k,v,comp_func,eq_func>::contains(k key) {
 		try {
 			this->do_lookup(head, key);
 		}
@@ -234,8 +242,8 @@ namespace cop3530 {
 	}
 	
 	//--is_empty
-	template <typename k, typename v, bool (*comp_func)(k,k), bool (*eq_func)(k,k)>
-	bool BST_Root<k,v,comp_func,eq_func>::is_empty() {
+	template <typename k, typename v, bool (*comp_func)(const k&,const k&), bool (*eq_func)(const k&,const k&)>
+	bool BSTROOT<k,v,comp_func,eq_func>::is_empty() {
 		if (head == nullptr) {
 			return true;
 		}
@@ -246,8 +254,8 @@ namespace cop3530 {
 	
 	//--is_full
 	//should only be full if we can not physically allocate more memory for a new node
-	template <typename k, typename v, bool (*comp_func)(k,k), bool (*eq_func)(k,k)>
-	bool BST_Root<k,v,comp_func,eq_func>::is_full() {
+	template <typename k, typename v, bool (*comp_func)(const k&,const k&), bool (*eq_func)(const k&,const k&)>
+	bool BSTROOT<k,v,comp_func,eq_func>::is_full() {
 		class Node<k,v> *temp;
 		try {
 			
@@ -261,14 +269,14 @@ namespace cop3530 {
 	}
 	
 	//--size
-	template <typename k, typename v, bool (*comp_func)(k,k), bool (*eq_func)(k,k)>
-	size_t BST_Root<k,v,comp_func,eq_func>::size() {
+	template <typename k, typename v, bool (*comp_func)(const k&,const k&), bool (*eq_func)(const k&,const k&)>
+	size_t BSTROOT<k,v,comp_func,eq_func>::size() {
 		return this->do_size(head);
 	}
 	
 	//--do_size
-	template <typename k, typename v, bool (*comp_func)(k,k), bool (*eq_func)(k,k)>
-	size_t BST_Root<k,v,comp_func,eq_func>::do_size(Node<k,v> *& root) {
+	template <typename k, typename v, bool (*comp_func)(const k&,const k&), bool (*eq_func)(const k&,const k&)>
+	size_t BSTROOT<k,v,comp_func,eq_func>::do_size(Node<k,v> *& root) {
 		if (root == nullptr) {
 			return 0;
 		}
@@ -279,8 +287,8 @@ namespace cop3530 {
 	}
 	
 	//--clear
-	template <typename k, typename v, bool (*comp_func)(k,k), bool (*eq_func)(k,k)>
-	void BST_Root<k,v,comp_func,eq_func>::clear() {
+	template <typename k, typename v, bool (*comp_func)(const k&,const k&), bool (*eq_func)(const k&,const k&)>
+	void BSTROOT<k,v,comp_func,eq_func>::clear() {
 		//should work by just calling remove on head
 		while (head != nullptr) {
 			this->remove(head->key);
@@ -288,14 +296,14 @@ namespace cop3530 {
 	}
 	
 	//--height
-	template <typename k, typename v, bool (*comp_func)(k,k), bool (*eq_func)(k,k)>
-	size_t BST_Root<k,v,comp_func,eq_func>::height() {
+	template <typename k, typename v, bool (*comp_func)(const k&,const k&), bool (*eq_func)(const k&,const k&)>
+	size_t BSTROOT<k,v,comp_func,eq_func>::height() {
 		return this->do_height(head);
 	}
 	
 	//--do_height
-	template <typename k, typename v, bool (*comp_func)(k,k), bool (*eq_func)(k,k)>
-	size_t BST_Root<k,v,comp_func,eq_func>::do_height(Node<k,v> *& root) {
+	template <typename k, typename v, bool (*comp_func)(const k&,const k&), bool (*eq_func)(const k&,const k&)>
+	size_t BSTROOT<k,v,comp_func,eq_func>::do_height(Node<k,v> *& root) {
 		if (root == nullptr) {
 			return 0;
 		}
@@ -305,14 +313,14 @@ namespace cop3530 {
 	}
 	
 	//--balance
-	template <typename k, typename v, bool (*comp_func)(k,k), bool (*eq_func)(k,k)>
-	int BST_Root<k,v,comp_func,eq_func>::balance() {
+	template <typename k, typename v, bool (*comp_func)(const k&,const k&), bool (*eq_func)(const k&,const k&)>
+	int BSTROOT<k,v,comp_func,eq_func>::balance() {
 		return this->do_balance(head);
 	}
 	
 	//--do_balance
-	template <typename k, typename v, bool (*comp_func)(k,k), bool (*eq_func)(k,k)>
-	int BST_Root<k,v,comp_func,eq_func>::do_balance(Node<k,v> *& root) {
+	template <typename k, typename v, bool (*comp_func)(const k&,const k&), bool (*eq_func)(const k&,const k&)>
+	int BSTROOT<k,v,comp_func,eq_func>::do_balance(Node<k,v> *& root) {
 		if (root == nullptr) {
 			return 0;
 		}
