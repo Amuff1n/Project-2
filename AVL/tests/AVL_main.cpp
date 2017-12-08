@@ -179,10 +179,29 @@ SCENARIO("Testing balance") {
 			avl->insert(8,8);
 			avl->insert(15,15);
 			int balance = avl->balance();
-			THEN("Then balance should be 1") {
-				REQUIRE(balance == 1);
+			THEN("The abs(balance) should be <= 1") {
+				REQUIRE(abs(balance) <= 1);
 			}
 		}
+		
+		WHEN("Test another normal case") {
+			avl->insert(14,14);
+			avl->insert(71,71);
+			avl->insert(3,3);
+			avl->insert(52,52);
+			avl->insert(68,68);
+			avl->insert(92,92);
+			avl->insert(59,59);
+			avl->insert(37,37);
+			avl->insert(22,22);
+			avl->insert(49,49);
+			avl->insert(41,41);
+			int balance = avl->balance();
+			THEN("The abs(balance) should be <= 1") {
+				REQUIRE(abs(balance) <= 1);
+			}
+		}
+		
 		delete avl;
 	}
 }
@@ -282,69 +301,59 @@ SCENARIO("Testing bonus methods") {
 
 SCENARIO("Testing 'big five' methods") {
 	GIVEN("List of items, with keys being [1,19,5,18,3,8,9] and values being [A,S,E,R,C,H,I]") {
-		AVL<int, char, comparison_function, equals_function> * avl = new AVL<int, char, comparison_function, equals_function>;
+		AVL<int, char, comparison_function, equals_function> avl;
 		
-		avl->insert(1,'A');
-		avl->insert(19,'S');
-		avl->insert(5,'E');
-		avl->insert(18,'R');
-		avl->insert(3,'C');
-		avl->insert(8,'H');
-		avl->insert(9,'I');
+		avl.insert(1,'A');
+		avl.insert(19,'S');
+		avl.insert(5,'E');
+		avl.insert(18,'R');
+		avl.insert(3,'C');
+		avl.insert(8,'H');
+		avl.insert(9,'I');
 		
 		WHEN("Testing copy constructor") {
-			AVL<int, char, comparison_function, equals_function> * avl2 = avl;
+			AVL<int, char, comparison_function, equals_function> avl2 = avl;
 			THEN("New copy should successfully lookup 18") {
-				char value = avl2->lookup(18);
+				char value = avl2.lookup(18);
 				REQUIRE(value == 'R');
 			}
-			
 		}
-		/*
-		//losing bytes in this test
+	
 		WHEN("Testing copy assignment") {
-			AVL<int, char, comparison_function, equals_function> * avl2 = new AVL<int, char, comparison_function, equals_function>;
+			AVL<int, char, comparison_function, equals_function> avl2;
 			//throw in values different from other to ensure assignment works
-			avl2->insert(4,'D');
-			avl2->insert(2,'B');
-			avl2->insert(26,'Z');
+			avl2.insert(4,'D');
+			avl2.insert(2,'B');
+			avl2.insert(26,'Z');
 			
 			avl2 = avl;
 			THEN("New copy should succesfully lookup 18") {
-				char value = avl2->lookup(18);
+				char value = avl2.lookup(18);
 				REQUIRE(value == 'R');
 			}
-			
-			delete avl2;
 		}
-		*/
+		
 		WHEN ("Testing move constructor") {
-			AVL<int, char, comparison_function, equals_function> * avl2(std::move(avl));
+			AVL<int, char, comparison_function, equals_function> avl2(std::move(avl));
 			THEN("New copy should successfully lookup 18") {
-				char value = avl2->lookup(18);
+				char value = avl2.lookup(18);
 				REQUIRE(value == 'R');
 			}
 		}
-		/*
-		//losing bytes in this test
+		
 		WHEN("Testing move assignment") {
-			AVL<int, char, comparison_function, equals_function> * avl2 = new AVL<int, char, comparison_function, equals_function>;
+			AVL<int, char, comparison_function, equals_function> avl2;
 			//throw in values different from other to ensure assignment works
-			avl2->insert(4,'D');
-			avl2->insert(2,'B');
-			avl2->insert(26,'Z');
+			avl2.insert(4,'D');
+			avl2.insert(2,'B');
+			avl2.insert(26,'Z');
 			
 			avl2 = std::move(avl);
 			THEN("New copy should succesfully lookup 18") {
-				char value = avl2->lookup(18);
+				char value = avl2.lookup(18);
 				REQUIRE(value == 'R');
 			}
-			
-			delete avl2;
 		}
-		*/
-		
-		delete avl;
 	}
 }
 

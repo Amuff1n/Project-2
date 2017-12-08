@@ -30,7 +30,7 @@ namespace cop3530 {
 		~AVL();
 		AVL(const AVL& other); //copy constructor
 		AVL<k,v,comp_func,eq_func>& operator= (const AVL& other); //copy assignment
-		Node<k,v> * do_copy(const Node<k,v>*& root); //helper method for copy stuff
+		Node<k,v> * do_copy(const Node<k,v>* root); //helper method for copy stuff
 		AVL(AVL&& other); //move constructor
 		AVL<k,v,comp_func,eq_func>& operator= (AVL&& other); //move-assignment operator
 		
@@ -80,7 +80,7 @@ namespace cop3530 {
 	//may have exception problems if other throws exceptions
 	template <typename k, typename v, bool (*comp_func)(const k&,const k&), bool (*eq_func)(const k&,const k&)>
 	AVL<k,v,comp_func,eq_func>& AVL<k,v,comp_func,eq_func>::operator=(const AVL& other) {
-		if (this != other) {
+		if (this != &other) {
 			this->clear();
 	
 			head = this->do_copy(other.head);
@@ -90,7 +90,7 @@ namespace cop3530 {
 	
 	//--do_copy helper
 	template <typename k, typename v, bool (*comp_func)(const k&,const k&), bool (*eq_func)(const k&,const k&)>
-	Node<k,v> * AVL<k,v,comp_func,eq_func>::do_copy(const Node<k,v> *& root) {
+	Node<k,v> * AVL<k,v,comp_func,eq_func>::do_copy(const Node<k,v> * root) {
 		if (root == nullptr) {
 			return nullptr;
 		}
@@ -112,17 +112,17 @@ namespace cop3530 {
 	//--move constructor
 	template <typename k, typename v, bool (*comp_func)(const k&,const k&), bool (*eq_func)(const k&,const k&)>
 	AVL<k,v,comp_func,eq_func>::AVL(AVL&& other) {
-		head = other->head;
-		other->head = nullptr;
+		head = other.head;
+		other.head = nullptr;
 	}
 	
 	//--move assignment
 	template <typename k, typename v, bool (*comp_func)(const k&,const k&), bool (*eq_func)(const k&,const k&)>
 	AVL<k,v,comp_func,eq_func>& AVL<k,v,comp_func,eq_func>::operator=(AVL&& other) {
-		if (this != other) {
+		if (this != &other) {
 			this->clear();
-			head = other->head;
-			other->head = nullptr;
+			head = other.head;
+			other.head = nullptr;
 		}
 		return *this;
 	}
@@ -158,7 +158,7 @@ namespace cop3530 {
 				root = temp;
 			}
 			else if (balance_root >= 2 && balance_left <= -1) {
-				class Node<k,v> *temp;
+				class Node<k,v> *temp, *temp2;
 				//rotate root left
 				temp = root->left->right;
 				root->left->right = temp->left;
@@ -222,42 +222,48 @@ namespace cop3530 {
 	Node<k,v>* AVL<k,v,comp_func,eq_func>::do_remove(Node<k,v> *& root, k key) {
 		class Node<k,v> *temp;
 		if (root == nullptr) {
-			return nullptr;
+			return root;
 		}
 		if (comp_func(key,root->key)) {
 			root->left = do_remove(root->left, key);
-			int balance_root = this->do_balance(root);
-			int balance_left = this->do_balance(root->left);
-			if (balance_root >= 2 && balance_left >= 0) {
-				//rotate root right
-				class Node<k,v> *temp;
-				temp = root->left;
-				root->left = temp->right;
-				temp->right = root;
-				root = temp;
-			}
-			else if (balance_root >= 2 && balance_left <= -1) {
-				class Node<k,v> *temp;
-				//rotate root left
-				temp = root->left->right;
-				root->left->right = temp->left;
-				temp->left = root->left;
-				root->left = temp;
-					
-				//then rotate root right
-				temp = root->left;
-				root->left = temp->right;
-				temp->right = root;
-				root = temp;
-			}
-			else {
-				//do nothing?
-			}
 		}
 		if (comp_func(root->key, key)) {
 			root->right = do_remove(root->right, key);
+		}
+		if (eq_func(key, root->key)) {
+			temp = root;
+			if (root->right == nullptr) {
+				root = root->left;
+				delete temp;
+			}
+			else {
+				//find minimum value in right subtree
+				class Node<k,v> *min;
+				min = root->right;
+				while (min->left != nullptr) {
+					min = min->left;
+				}
+				//replace root with min value
+				root->key = min->key;
+				root->value = min->value;
+				//do_remove on right subtree with current root's key, since there is now a duplicate
+				root->right = do_remove(root->right, root->key);
+			}
+		}
+		
+		if (root == nullptr) {
+				return root;
+			}
 			int balance_root = this->do_balance(root);
-			int balance_right = this->do_balance(root->right);
+			int balance_right = 0;
+			int balance_left = 0;
+			if (root->right) {
+				balance_right = this->do_balance(root->right);
+			}
+			if (root->left) {
+				balance_left = this->do_balance(root->left);
+			}
+			
 			if (balance_root <= -2 && balance_right <= 0) {
 				//rotate root left
 				class Node<k,v> *temp;
@@ -280,30 +286,31 @@ namespace cop3530 {
 				temp->left = root;
 				root = temp;
 			}
+			else if (balance_root >= 2 && balance_left >= 0) {
+				//rotate root right
+				class Node<k,v> *temp;
+				temp = root->left;
+				root->left = temp->right;
+				temp->right = root;
+				root = temp;
+			}
+			else if (balance_root >= 2 && balance_left <= -1) {
+				class Node<k,v> *temp;
+				//rotate root left
+				temp = root->left->right;
+				root->left->right = temp->left;
+				temp->left = root->left;
+				root->left = temp;
+					
+				//then rotate root right
+				temp = root->left;
+				root->left = temp->right;
+				temp->right = root;
+				root = temp;
+			}
 			else {
 				//don't rotate?
 			}
-		}
-		if (eq_func(key, root->key)) {
-			temp = root;
-			if (root->right == nullptr) {
-				root = root->left;
-				delete temp;
-			}
-			else {
-				//find minimum value in right subtree
-				class Node<k,v> *min;
-				min = root->right;
-				while (min->left != nullptr) {
-					min = min->left;
-				}
-				//replace root with min value
-				root->key = min->key;
-				root->value = min->value;
-				//do_remove on right subtree with current root's key, since there is now a duplicate
-				do_remove(root->right, root->key);
-			}
-		}
 		return root;	
 	}
 	

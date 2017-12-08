@@ -227,67 +227,59 @@ SCENARIO("Testing bonus methods") {
 
 SCENARIO("Testing 'big five' methods") {
 	GIVEN("List of items, with keys being [1,19,5,18,3,8,9] and values being [A,S,E,R,C,H,I]") {
-		BSTROOT<int, char, comparison_function, equals_function> * bst = new BSTROOT<int, char, comparison_function, equals_function>;
+		BSTROOT<int, char, comparison_function, equals_function> bst;
 		
-		bst->insert(1,'A');
-		bst->insert(19,'S');
-		bst->insert(5,'E');
-		bst->insert(18,'R');
-		bst->insert(3,'C');
-		bst->insert(8,'H');
-		bst->insert(9,'I');
+		bst.insert(1,'A');
+		bst.insert(19,'S');
+		bst.insert(5,'E');
+		bst.insert(18,'R');
+		bst.insert(3,'C');
+		bst.insert(8,'H');
+		bst.insert(9,'I');
 		
 		WHEN("Testing copy constructor") {
-			BSTROOT<int, char, comparison_function, equals_function> * bst2 = bst;
+			BSTROOT<int, char, comparison_function, equals_function> bst2 = bst;
 			THEN("New copy should successfully lookup 18") {
-				char value = bst2->lookup(18);
+				char value = bst2.lookup(18);
 				REQUIRE(value == 'R');
 			}
 		}
-		/*
-		//losing bytes in this test
+	
 		WHEN("Testing copy assignment") {
-			BSTROOT<int, char, comparison_function, equals_function> * bst2 = new BSTROOT<int, char, comparison_function, equals_function>;
+			BSTROOT<int, char, comparison_function, equals_function> bst2;
 			//throw in values different from other to ensure assignment works
-			bst2->insert(4,'D');
-			bst2->insert(2,'B');
-			bst2->insert(26,'Z');
+			bst2.insert(4,'D');
+			bst2.insert(2,'B');
+			bst2.insert(26,'Z');
 			
 			bst2 = bst;
 			THEN("New copy should succesfully lookup 18") {
-				char value = bst2->lookup(18);
+				char value = bst2.lookup(18);
 				REQUIRE(value == 'R');
 			}
-			
-			delete bst2;
 		}
-		*/
+		
 		WHEN ("Testing move constructor") {
-			BSTROOT<int, char, comparison_function, equals_function> * bst2(std::move(bst));
+			BSTROOT<int, char, comparison_function, equals_function> bst2(std::move(bst));
 			THEN("New copy should successfully lookup 18") {
-				char value = bst2->lookup(18);
+				char value = bst2.lookup(18);
 				REQUIRE(value == 'R');
 			}
 		}
-		/*
-		//losing bytes in this test
+		
 		WHEN("Testing move assignment") {
-			BSTROOT<int, char, comparison_function, equals_function> * bst2 = new BSTROOT<int, char, comparison_function, equals_function>;
+			BSTROOT<int, char, comparison_function, equals_function> bst2;
 			//throw in values different from other to ensure assignment works
-			bst2->insert(4,'D');
-			bst2->insert(2,'B');
-			bst2->insert(26,'Z');
+			bst2.insert(4,'D');
+			bst2.insert(2,'B');
+			bst2.insert(26,'Z');
 			
 			bst2 = std::move(bst);
 			THEN("New copy should succesfully lookup 18") {
-				char value = bst2->lookup(18);
+				char value = bst2.lookup(18);
 				REQUIRE(value == 'R');
 			}
-			
-			delete bst2;
 		}
-		*/
-		delete bst;
 	}
 }
 

@@ -33,7 +33,7 @@ namespace cop3530 {
 		~BSTLEAF();
 		BSTLEAF(const BSTLEAF& other); //copy constructor
 		BSTLEAF<k,v,comp_func,eq_func>& operator= (const BSTLEAF& other); //copy assignment
-		Node<k,v> * do_copy(const Node<k,v>*& root); //helper method for copy stuff
+		Node<k,v> * do_copy(const Node<k,v>* root); //helper method for copy stuff
 		BSTLEAF(BSTLEAF&& other); //move constructor
 		BSTLEAF<k,v,comp_func,eq_func>& operator= (BSTLEAF&& other); //move-assignment operator
 		
@@ -82,7 +82,7 @@ namespace cop3530 {
 	//may have exception problems if other throws exceptions
 	template <typename k, typename v, bool (*comp_func)(const k&,const k&), bool (*eq_func)(const k&,const k&)>
 	BSTLEAF<k,v,comp_func,eq_func>& BSTLEAF<k,v,comp_func,eq_func>::operator=(const BSTLEAF& other) {
-		if (this != other) {
+		if (this != &other) {
 			this->clear();
 			
 			head = this->do_copy(other.head);
@@ -92,7 +92,7 @@ namespace cop3530 {
 	
 	//--do_copy helper
 	template <typename k, typename v, bool (*comp_func)(const k&,const k&), bool (*eq_func)(const k&,const k&)>
-	Node<k,v> * BSTLEAF<k,v,comp_func,eq_func>::do_copy(const Node<k,v> *& root) {
+	Node<k,v> * BSTLEAF<k,v,comp_func,eq_func>::do_copy(const Node<k,v> * root) {
 		if (root == nullptr) {
 			return nullptr;
 		}
@@ -112,17 +112,17 @@ namespace cop3530 {
 	//--move constructor
 	template <typename k, typename v, bool (*comp_func)(const k&,const k&), bool (*eq_func)(const k&,const k&)>
 	BSTLEAF<k,v,comp_func,eq_func>::BSTLEAF(BSTLEAF&& other) {
-		head = other->head;
-		other->head = nullptr;
+		head = other.head;
+		other.head = nullptr;
 	}
 	
 	//--move assignment
 	template <typename k, typename v, bool (*comp_func)(const k&,const k&), bool (*eq_func)(const k&,const k&)>
 	BSTLEAF<k,v,comp_func,eq_func>& BSTLEAF<k,v,comp_func,eq_func>::operator=(BSTLEAF&& other) {
-		if (this != other) {
+		if (this != &other) {
 			this->clear();
-			head = other->head;
-			other->head = nullptr;
+			head = other.head;
+			other.head = nullptr;
 		}
 		return *this;
 	}
