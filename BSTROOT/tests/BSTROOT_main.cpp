@@ -1,7 +1,7 @@
 #define CATCH_CONFIG_MAIN
-#include "catch.hpp"
+#include "../catch.hpp"
 
-#include "BSTRAND.h"
+#include "../BSTROOT.h"
 
 #include <iostream>
 
@@ -27,7 +27,7 @@ bool equals_function(const int& a, const int& b) {
 
 SCENARIO("Testing Insertion and Lookup") {
 	GIVEN ("List of items, with keys being [1,19,5,18,3,8,9] and values being [A,S,E,R,C,H,I]") {
-		BSTRAND<int, char, comparison_function, equals_function> * bst = new BSTRAND<int, char, comparison_function, equals_function>;
+		BSTROOT<int, char, comparison_function, equals_function> * bst = new BSTROOT<int, char, comparison_function, equals_function>;
 		
 		bst->insert(1,'A');
 		bst->insert(19,'S');
@@ -100,7 +100,7 @@ SCENARIO("Testing Insertion and Lookup") {
 
 SCENARIO("Testing removal") {
 	GIVEN ("List of items, with keys being [1,19,5,18,3,8,9] and values being [A,S,E,R,C,H,I]") {
-		BSTRAND<int, char, comparison_function, equals_function> * bst = new BSTRAND<int, char, comparison_function, equals_function>;
+		BSTROOT<int, char, comparison_function, equals_function> * bst = new BSTROOT<int, char, comparison_function, equals_function>;
 		
 		bst->insert(1,'A');
 		bst->insert(19,'S');
@@ -154,7 +154,7 @@ SCENARIO("Testing removal") {
 
 SCENARIO("Testing bonus methods") {
 	GIVEN ("List of items, with keys being [1,19,5,18,3,8,9] and values being [A,S,E,R,C,H,I]") {
-		BSTRAND<int, char, comparison_function, equals_function> * bst = new BSTRAND<int, char, comparison_function, equals_function>;
+		BSTROOT<int, char, comparison_function, equals_function> * bst = new BSTROOT<int, char, comparison_function, equals_function>;
 		
 		bst->insert(1,'A');
 		bst->insert(19,'S');
@@ -207,20 +207,17 @@ SCENARIO("Testing bonus methods") {
 			}
 		}
 		
-		//failing this test. What would the height be for a RAND BST?
 		WHEN("Checking height") {
 			size_t height = bst->height();
-			THEN("Height could theoritically be bewteen 1 and 7") {
-				REQUIRE(height < 7);
-				REQUIRE(height > 1);
+			THEN("Height should be 4 (i think)") {
+				REQUIRE(height == 4);
 			}
 		}
 		
 		WHEN("Checking balance") {
 			int balance = bst->balance();
-			THEN("Balance should likely not be -5 or 1") {
-				REQUIRE(balance != -5);
-				REQUIRE(balance != 1);
+			THEN("Balance should 1 (i think)") {
+				REQUIRE(balance == 1);
 			}
 		}
 		
@@ -230,7 +227,7 @@ SCENARIO("Testing bonus methods") {
 
 SCENARIO("Testing 'big five' methods") {
 	GIVEN("List of items, with keys being [1,19,5,18,3,8,9] and values being [A,S,E,R,C,H,I]") {
-		BSTRAND<int, char, comparison_function, equals_function> * bst = new BSTRAND<int, char, comparison_function, equals_function>;
+		BSTROOT<int, char, comparison_function, equals_function> * bst = new BSTROOT<int, char, comparison_function, equals_function>;
 		
 		bst->insert(1,'A');
 		bst->insert(19,'S');
@@ -241,7 +238,7 @@ SCENARIO("Testing 'big five' methods") {
 		bst->insert(9,'I');
 		
 		WHEN("Testing copy constructor") {
-			BSTRAND<int, char, comparison_function, equals_function> * bst2 = bst;
+			BSTROOT<int, char, comparison_function, equals_function> * bst2 = bst;
 			THEN("New copy should successfully lookup 18") {
 				char value = bst2->lookup(18);
 				REQUIRE(value == 'R');
@@ -250,7 +247,7 @@ SCENARIO("Testing 'big five' methods") {
 		/*
 		//losing bytes in this test
 		WHEN("Testing copy assignment") {
-			BSTRAND<int, char, comparison_function, equals_function> * bst2 = new BSTRAND<int, char, comparison_function, equals_function>;
+			BSTROOT<int, char, comparison_function, equals_function> * bst2 = new BSTROOT<int, char, comparison_function, equals_function>;
 			//throw in values different from other to ensure assignment works
 			bst2->insert(4,'D');
 			bst2->insert(2,'B');
@@ -265,8 +262,56 @@ SCENARIO("Testing 'big five' methods") {
 			delete bst2;
 		}
 		*/
-		
+		WHEN ("Testing move constructor") {
+			BSTROOT<int, char, comparison_function, equals_function> * bst2(std::move(bst));
+			THEN("New copy should successfully lookup 18") {
+				char value = bst2->lookup(18);
+				REQUIRE(value == 'R');
+			}
+		}
+		/*
+		//losing bytes in this test
+		WHEN("Testing move assignment") {
+			BSTROOT<int, char, comparison_function, equals_function> * bst2 = new BSTROOT<int, char, comparison_function, equals_function>;
+			//throw in values different from other to ensure assignment works
+			bst2->insert(4,'D');
+			bst2->insert(2,'B');
+			bst2->insert(26,'Z');
+			
+			bst2 = std::move(bst);
+			THEN("New copy should succesfully lookup 18") {
+				char value = bst2->lookup(18);
+				REQUIRE(value == 'R');
+			}
+			
+			delete bst2;
+		}
+		*/
 		delete bst;
 	}
 }
 
+SCENARIO("Testing constant-ness(?)") {
+	GIVEN("A constant BST") {
+		BSTROOT<int, char, comparison_function, equals_function> * bst = new BSTROOT<int, char, comparison_function, equals_function>;
+		
+		bst->insert(1,'A');
+		bst->insert(19,'S');
+		bst->insert(5,'E');
+		bst->insert(18,'R');
+		bst->insert(3,'C');
+		bst->insert(8,'H');
+		bst->insert(9,'I');
+		
+		BSTROOT<int, char, comparison_function, equals_function> const * bst2 = bst;
+		
+		WHEN("Looking up the key 8") {
+			char value = bst2->lookup(8);
+			THEN("It should work and return 'H'") {
+				REQUIRE(value == 'H');
+			}
+		}
+	
+		delete bst;
+	}
+}

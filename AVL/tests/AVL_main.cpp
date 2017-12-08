@@ -1,7 +1,7 @@
 #define CATCH_CONFIG_MAIN
-#include "catch.hpp"
+#include "../catch.hpp"
 
-#include "AVL.h"
+#include "../AVL.h"
 
 #include <iostream>
 
@@ -318,8 +318,57 @@ SCENARIO("Testing 'big five' methods") {
 			delete avl2;
 		}
 		*/
+		WHEN ("Testing move constructor") {
+			AVL<int, char, comparison_function, equals_function> * avl2(std::move(avl));
+			THEN("New copy should successfully lookup 18") {
+				char value = avl2->lookup(18);
+				REQUIRE(value == 'R');
+			}
+		}
+		/*
+		//losing bytes in this test
+		WHEN("Testing move assignment") {
+			AVL<int, char, comparison_function, equals_function> * avl2 = new AVL<int, char, comparison_function, equals_function>;
+			//throw in values different from other to ensure assignment works
+			avl2->insert(4,'D');
+			avl2->insert(2,'B');
+			avl2->insert(26,'Z');
+			
+			avl2 = std::move(avl);
+			THEN("New copy should succesfully lookup 18") {
+				char value = avl2->lookup(18);
+				REQUIRE(value == 'R');
+			}
+			
+			delete avl2;
+		}
+		*/
 		
 		delete avl;
 	}
 }
 
+SCENARIO("Testing constant-ness(?)") {
+	GIVEN("A constant BST") {
+		AVL<int, char, comparison_function, equals_function> * avl = new AVL<int, char, comparison_function, equals_function>;
+		
+		avl->insert(1,'A');
+		avl->insert(19,'S');
+		avl->insert(5,'E');
+		avl->insert(18,'R');
+		avl->insert(3,'C');
+		avl->insert(8,'H');
+		avl->insert(9,'I');
+		
+		AVL<int, char, comparison_function, equals_function> const * avl2 = avl;
+		
+		WHEN("Looking up the key 8") {
+			char value = avl2->lookup(8);
+			THEN("It should work and return 'H'") {
+				REQUIRE(value == 'H');
+			}
+		}
+	
+		delete avl;
+	}
+}

@@ -39,7 +39,9 @@ namespace cop3530 {
 		void remove(k key);
 		Node<k,v> * do_remove(Node<k,v> *& root, k key);
 		v& lookup(k key);
+		const v& lookup(k key) const;
 		v& do_lookup(Node<k,v> *& root, k key);
+		const v& do_lookup_const(const Node<k,v> * root, k key) const;
 		
 		bool contains(k key);
 		bool is_empty();
@@ -211,6 +213,12 @@ namespace cop3530 {
 		return this->do_lookup(head, key);
 	}
 	
+	//--lookup const
+	template <typename k, typename v, bool (*comp_func)(const k&,const k&), bool (*eq_func)(const k&,const k&)>
+	const v& BSTROOT<k,v,comp_func,eq_func>::lookup(k key) const {
+		return this->do_lookup_const(head, key);
+	}
+	
 	//--do_lookup 
 	template <typename k, typename v, bool (*comp_func)(const k&,const k&), bool (*eq_func)(const k&,const k&)>
 	v& BSTROOT<k,v,comp_func,eq_func>::do_lookup(Node<k,v> *& root, k key) {
@@ -226,6 +234,24 @@ namespace cop3530 {
 		}
 		else {
 			return this->do_lookup(root->right, key);
+		}
+	}
+	
+	//--do_lookup const 
+	template <typename k, typename v, bool (*comp_func)(const k&,const k&), bool (*eq_func)(const k&,const k&)>
+	const v& BSTROOT<k,v,comp_func,eq_func>::do_lookup_const(const Node<k,v> * root, k key) const {
+		if (root == nullptr) {
+			throw std::runtime_error("key does not exist in BST");
+
+		}
+		if (eq_func(key, root->key)) {
+			return root->value;
+		}
+		if (comp_func(key, root->key)) {
+			return this->do_lookup_const(root->left, key);
+		}
+		else {
+			return this->do_lookup_const(root->right, key);
 		}
 	}
 	
