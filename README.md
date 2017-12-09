@@ -5,3 +5,5 @@ Binary Search Tree - Insert at Random (BSTRAND),
 and AAdelson-Velski & Landis Tree (AVL).
 
 https://www.cise.ufl.edu/~dts/cop3530/proj2/
+
+Currently file structure is out of wack because I changed the folders to lowercase. will fix later.
